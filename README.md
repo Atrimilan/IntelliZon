@@ -10,7 +10,7 @@ Les dépendances suivantes doivent être installées sur le poste :
 
 ## 2. Installation et démarrage
 ### A. Base MongoDB (avec Docker)
-* Démarrez une instance Docker de MongoDB en exécutant [docker_mongo.bat](docker_mongo.bat).
+* Démarrez une instance Docker de MongoDB en exécutant [run_mongo_docker.bat](run_mongo_docker.bat).
 * Par défaut l'utilisateur et le mot de passe sont `admin`.
 
 ### B. Serveur HTTP ExpressJS
@@ -30,8 +30,8 @@ Les dépendances suivantes doivent être installées sur le poste :
   ```
   Ces clées seront nécessaires pour intégrer HTTP depuis la [Console Helium IoT](https://console.helium-iot.xyz/) de manière sécurisée, ainsi que pour sécuriser le requêtes `GET` depuis le Front.
 
-  > Si vous avez modifié le mot de passe dans [docker_mongo.bat](docker_mongo.bat), il faut aussi le faire dans la constante `MONGO_DB_URL`.
-* Exécutez [start_server.bat](start_server.bat) pour démarrer le serveur.
+  > Si vous avez modifié le mot de passe dans [run_mongo_docker.bat](run_mongo_docker.bat), il faut aussi le faire dans la constante `MONGO_DB_URL`.
+* Exécutez [run_express_server.bat](run_express_server.bat) pour démarrer le serveur.
 
 ### C. Déploiement avec Ngrok
 
