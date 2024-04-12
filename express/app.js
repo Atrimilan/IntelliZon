@@ -50,8 +50,8 @@ app.get('/api/intellizon-front/getLatestData', authFront, async (req, res) => {
     }
 });
 
-// Récupérer les données 
-app.post('/api/intellizon-front/getData', authFront, async (req, res) => {
+// Récupérer une plage de données (à partir d'un START et d'un END faculatifs)
+app.post('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
     try {
         const body = req.body;
 
