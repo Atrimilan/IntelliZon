@@ -25,7 +25,7 @@ char appeui[] = "<application-eui>"; // Correspond au "Join EUI" sur Helium
 char appkey[] = "<application-key>"; // Généré dans l'onglet "OTAA keys" de Helium
 
 
-void data_decord(int temp, int humi, int light, uint8_t data[4]) {
+void data_decord(int temp, int humi, int light, uint8_t data[6]) {
   int val[] = { temp, humi, light };
 
   for (int i = 0, j = 0; i < 2; i++, j += 2) {

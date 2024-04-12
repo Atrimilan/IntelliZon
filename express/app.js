@@ -29,17 +29,20 @@ function authFront(req, res, next) {
     next();
 }
 
-// Vérifier que l'application est en marche : http://localhost:3000/health
+// Vérifier que l'application est en marche : http://localhost:3000/api/health
 app.get('/api/health', (req, res) => {
     res.send('Le serveur IntelliZon est en marche !');
 });
 
-// Récupérer les dernières données
-app.get('/api/intellizon-front/getLatestData', authFront, async (req, res) => {
+// Récupérer les dernières données d'un appareil
+app.get('/api/intellizon-front/getLatestData/:device', authFront, async (req, res) => {
     try {
+        const device = req.params.device;
+
         await mongoClient.connect();
-        const db = mongoClient.db('intellizon_helium');
-        const data = await db.collection('sensor_data').findOne({}, { sort: { _id: -1 } });
+        const collection = mongoClient.db('intellizon_helium').collection(device);
+        const data = await collection.findOne({}, { sort: { _id: -1 } });
+
         res.status(200).send(data);
 
     } catch (error) {
@@ -50,18 +53,15 @@ app.get('/api/intellizon-front/getLatestData', authFront, async (req, res) => {
     }
 });
 
-// Récupérer une plage de données (à partir d'un START et d'un END faculatifs)
-app.get('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
+// Récupérer une plage de données d'un appareil (à partir d'un START et d'un END faculatifs)
+app.get('/api/intellizon-front/getDataRange/:device', authFront, async (req, res) => {
     try {
-        const queryParams = req.query;
-
-        const start = queryParams.start || null;
-        const end = queryParams.end || null;
-
+        const start = req.query.start || null;
+        const end = req.query.end || null;
+        const device = req.params.device;
+        
         await mongoClient.connect();
-
-        const database = mongoClient.db('intellizon_helium');
-        const collection = database.collection('sensor_data');
+        const collection = mongoClient.db('intellizon_helium').collection(device);
 
         // Construire l'objet de requête, si un START et/ou un END sont définis dans le corps de la requête
         const query = {};
@@ -75,8 +75,7 @@ app.get('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
             query.datetime.$lte = new Date(end);
         }
 
-        const cursor = collection.find(query);
-        const documents = await cursor.toArray();
+        const documents = await collection.find(query).toArray();
         res.status(200).send(documents);
 
     } catch (error) {
@@ -91,8 +90,8 @@ app.get('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
 // Enregistrer des données à jour
 app.post('/api/helium/saveData', authHelium, async (req, res) => {
     try {
-        const timeISO = new Date(req.body.time);
         const deviceEUI = req.body.deviceInfo.devEui;
+        const timeISO = new Date(req.body.time);
         const humidity = req.body.object.humidity;
         const temperature = req.body.object.temp;
         const light = req.body.object.light;
@@ -102,13 +101,10 @@ app.post('/api/helium/saveData', authHelium, async (req, res) => {
         }
 
         await mongoClient.connect();
-
-        const database = mongoClient.db('intellizon_helium');
-        const collection = database.collection('sensor_data');
+        const collection = mongoClient.db('intellizon_helium').collection(deviceEUI);
 
         const data = {
             datetime: timeISO,
-            deviceEUI: deviceEUI,
             humidity: {
                 value: humidity / 100,
                 unit: '%'
@@ -118,7 +114,8 @@ app.post('/api/helium/saveData', authHelium, async (req, res) => {
                 unit: '°C'
             },
             light: {
-                value: light
+                value: light,
+                unit: 'lx'
             }
         };
         const result = await collection.insertOne(data);
