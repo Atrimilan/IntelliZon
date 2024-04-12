@@ -51,12 +51,12 @@ app.get('/api/intellizon-front/getLatestData', authFront, async (req, res) => {
 });
 
 // Récupérer une plage de données (à partir d'un START et d'un END faculatifs)
-app.post('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
+app.get('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
     try {
-        const body = req.body;
+        const queryParams = req.query;
 
-        const start = body.start || null;
-        const end = body.end || null;
+        const start = queryParams.start || null;
+        const end = queryParams.end || null;
 
         await mongoClient.connect();
 
