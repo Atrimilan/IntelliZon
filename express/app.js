@@ -1,6 +1,7 @@
 const express = require('express');
 const mongodb = require('mongodb');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const app = express();
 
 dotenv.config();
@@ -8,17 +9,11 @@ dotenv.config();
 const mongoClient = new mongodb.MongoClient(process.env.MONGO_DB_URL, {});
 
 app.use(express.json());
-
-// CORS
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
+app.use(cors());
 
 // Middleware d'authentification Helium
 function authHelium(req, res, next) {
-    const authHeader = req.headers['Authorization'];
+    const authHeader = req.headers['authorization'];
     if (!authHeader || authHeader !== process.env.HELIUM_IOT_API_KEY) {
         return res.status(401).send('Unauthorized');
     }
@@ -27,7 +22,7 @@ function authHelium(req, res, next) {
 
 // Middleware d'authentification du Front
 function authFront(req, res, next) {
-    const authHeader = req.headers['Authorization'];
+    const authHeader = req.headers['authorization'];
     if (!authHeader || authHeader !== process.env.INTELLIZON_FRONT_API_KEY) {
         return res.status(401).send('Unauthorized');
     }
@@ -56,7 +51,7 @@ app.get('/api/intellizon-front/getLatestData', authFront, async (req, res) => {
 });
 
 // Récupérer les données 
-app.post('/api/intellizon-front/getData', async (req, res) => {
+app.post('/api/intellizon-front/getData', authFront, async (req, res) => {
     try {
         const body = req.body;
 
