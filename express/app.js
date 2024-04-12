@@ -34,6 +34,22 @@ app.get('/api/health', (req, res) => {
     res.send('Le serveur IntelliZon est en marche !');
 });
 
+app.get('/api/intellizon-front/collections', authFront, async (req, res) => {
+    try {
+        await mongoClient.connect();
+        const db = mongoClient.db('intellizon_helium');
+        const collections = await db.listCollections().toArray();
+        
+        res.status(200).send(collections.map(collection => collection.name));
+
+    } catch (error) {
+        console.error('Impossible de récupérer les collections :', error);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        await mongoClient.close();
+    }
+});
+
 // Récupérer les dernières données d'un appareil
 app.get('/api/intellizon-front/getLatestData/:device', authFront, async (req, res) => {
     try {
@@ -46,7 +62,7 @@ app.get('/api/intellizon-front/getLatestData/:device', authFront, async (req, re
         res.status(200).send(data);
 
     } catch (error) {
-        console.error("Une erreur est survenue lors de la récupération des dernières informations dans MongoDB :", error);
+        console.error("Impossible de récupérer les informations :", error);
         res.status(500).send('Internal server error');
     } finally {
         await mongoClient.close();
@@ -59,7 +75,7 @@ app.get('/api/intellizon-front/getDataRange/:device', authFront, async (req, res
         const start = req.query.start || null;
         const end = req.query.end || null;
         const device = req.params.device;
-        
+
         await mongoClient.connect();
         const collection = mongoClient.db('intellizon_helium').collection(device);
 
@@ -79,7 +95,7 @@ app.get('/api/intellizon-front/getDataRange/:device', authFront, async (req, res
         res.status(200).send(documents);
 
     } catch (error) {
-        console.error('Error retrieving data from MongoDB:', error);
+        console.error('Impossible de récupérer les informations :', error);
         res.status(500).send('Internal Server Error');
     } finally {
         await mongoClient.close();
