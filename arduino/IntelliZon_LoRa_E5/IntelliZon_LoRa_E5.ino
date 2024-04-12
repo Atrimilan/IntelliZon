@@ -25,8 +25,8 @@ char appeui[] = "<application-eui>"; // Correspond au "Join EUI" sur Helium
 char appkey[] = "<application-key>"; // Généré dans l'onglet "OTAA keys" de Helium
 
 
-void data_decord(int val_1, int val_2, uint8_t data[4]) {
-  int val[] = { val_1, val_2 };
+void data_decord(int temp, int humi, int light, uint8_t data[4]) {
+  int val[] = { temp, humi, light };
 
   for (int i = 0, j = 0; i < 2; i++, j += 2) {
     if (val[i] < 0) {
@@ -90,18 +90,24 @@ void loop(void) {
   int int_temp, int_humi;
 
   error = sht4x.measureHighPrecision(temperature, humidity);
+  int light = analogRead(WIO_LIGHT);
+
   Serial.print("Temperature: ");
   Serial.print(temperature);
-  Serial.print(" Humidity: ");
-  Serial.println(humidity);
+  Serial.print("   Humidity: ");
+  Serial.print(humidity);
+  Serial.print("   Light: ");
+  Serial.println(light);
 
   int_temp = temperature * 100;
   int_humi = humidity * 100;
 
   // Utiliser data[] pour enregistrer les données des capteurs
-  static uint8_t data[4] = { 0x00, 0x00, 0x00, 0x00 };
+  static uint8_t data[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-  data_decord(int_temp, int_humi, data); // Convertir les données en hexadécimal
+  // Convertir les données en représentation binaire signée sur 16 bits
+  // -> Pour chaque valeur : 8 bits de poids faible dans une case de data[0] et 8 bits de poids fort dans la case suivante
+  data_decord(int_temp, int_humi, light, data);
 
   if (lorae5.send_sync(  // Sending the sensor values out
         8,               // LoRaWan Port
@@ -120,7 +126,7 @@ void loop(void) {
     }
   }
   
-  // Envoyer des données toutes les 15 minutes
+  // Envoyer des données toutes les 5 minutes
   // Note : Il est possible que le que les premières tentatives de connexion échouent
-  delay(15 * 60 * 1000);
+  delay(5 * 60 * 1000);
 }
