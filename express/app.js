@@ -92,10 +92,12 @@ app.get('/api/intellizon-front/getDataRange', authFront, async (req, res) => {
 app.post('/api/helium/saveData', authHelium, async (req, res) => {
     try {
         const timeISO = new Date(req.body.time);
+        const deviceEUI = req.body.deviceInfo.devEui;
         const humidity = req.body.object.humidity;
         const temperature = req.body.object.temp;
+        const light = req.body.object.light;
 
-        if (!timeISO || !humidity || !temperature) {
+        if (!timeISO || !deviceEUI || !humidity || !temperature || !light) {
             return res.status(400).send('Bad Request: Missing required fields');
         }
 
@@ -106,6 +108,7 @@ app.post('/api/helium/saveData', authHelium, async (req, res) => {
 
         const data = {
             datetime: timeISO,
+            deviceEUI: deviceEUI,
             humidity: {
                 value: humidity / 100,
                 unit: '%'
@@ -113,6 +116,9 @@ app.post('/api/helium/saveData', authHelium, async (req, res) => {
             temperature: {
                 value: temperature / 100,
                 unit: '°C'
+            },
+            light: {
+                value: light
             }
         };
         const result = await collection.insertOne(data);
