@@ -34,13 +34,29 @@ app.get('/api/health', (req, res) => {
     res.send('Le serveur IntelliZon est en marche !');
 });
 
+// Obtenir la liste des collections MongoDB
 app.get('/api/intellizon-front/collections', authFront, async (req, res) => {
     try {
         await mongoClient.connect();
         const db = mongoClient.db('intellizon_helium');
         const collections = await db.listCollections().toArray();
-        
-        res.status(200).send(collections.map(collection => collection.name));
+
+        // Nom des appareils écrit en dur, car nous n'avons pas d'API_KEY pour requêter Helium IoT
+        const deviceNames = {
+            "2cf7f1c04400049d": 'Capteur Jardin',
+            "2cf7f1c04280021c": 'Capteur Salle de bain',
+            "2cf7f1c04280041c": 'Capteur Salon'
+        };
+
+        const devices = collections.map(collection => {
+            const deviceEui = collection.name;
+            const deviceName = deviceNames[deviceEui] || `Capteur ${deviceEui}`;
+            const deviceType = "SenseCap K1100";
+
+            return { deviceEui, deviceName, deviceType };
+        });
+
+        res.status(200).send(devices);
 
     } catch (error) {
         console.error('Impossible de récupérer les collections :', error);

@@ -4,4 +4,4 @@
 
 cd express
 
-node app.js
+node --watch app.js
