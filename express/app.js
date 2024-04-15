@@ -135,11 +135,6 @@ app.get('/api/intellizon-front/getLatestData/:device', authFront, async (req, re
     }
 });
 
-// Obtenir la liste des lumières connectées
-app.get('/api/intellizon-front/getConnectedLights', authFront, async (req, res) => {
-    res.status(200).send(connectedLights);
-});
-
 // Récupérer une plage de données d'un appareil (à partir d'un START et d'un END faculatifs)
 app.get('/api/intellizon-front/getDataRange/:device', authFront, async (req, res) => {
     try {
@@ -171,6 +166,11 @@ app.get('/api/intellizon-front/getDataRange/:device', authFront, async (req, res
     } finally {
         await mongoClient.close();
     }
+});
+
+// Obtenir la liste des lumières connectées
+app.get('/api/intellizon-front/getConnectedLights', authFront, async (req, res) => {
+    res.status(200).send(connectedLights);
 });
 
 // Création ou mise à jour des configurations liées à un appareil
