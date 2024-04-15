@@ -222,6 +222,29 @@ app.put('/api/intellizon-front/saveConfig/:device', authFront, async (req, res) 
     }
 });
 
+// Obtenir la configuration liée à un appareil
+app.get('/api/intellizon-front/getConfig/:device', authFront, async (req, res) => {
+    try {
+        const device = req.params.device;
+
+        await mongoClient.connect();
+        const collection = mongoClient.db('intellizon_config').collection(device);
+
+        const config = await collection.findOne();
+
+        if (!config) {
+            return res.status(404).send('La configuration demandée n\'existe pas');
+        }
+
+        res.status(200).send(config);
+
+    } catch (error) {
+        console.error("Une erreur est survenue lors de la récupération de la configuration dans MongoDB :", error);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        await mongoClient.close();
+    }
+});
 
 // Enregistrer des données à jour
 app.post('/api/helium/saveData', authHelium, async (req, res) => {
