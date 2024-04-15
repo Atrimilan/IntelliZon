@@ -4,7 +4,7 @@ Projet de M2 à l'[École Hexagone](https://www.ecole-hexagone.com/).
 
 ![Infrastructure du projet](./assets/diagrams/Infra_IoT_LoRaWAN.drawio.png)
 
-> Angular 17 frontend applicaiton is available at https://github.com/Walouiji/intellizon-front.
+> Angular 17 frontend application is available at https://github.com/Walouiji/intellizon-front.
 
 ## 1. Prérequis
 Les dépendances suivantes doivent être installées sur le poste :
