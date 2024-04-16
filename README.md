@@ -15,7 +15,7 @@ Les dépendances suivantes doivent être installées sur le poste :
 ## 2. Installation et démarrage
 ### A. Base MongoDB (avec Docker)
 * Démarrez une instance Docker de MongoDB en exécutant [run_mongo_docker.bat](run_mongo_docker.bat).
-* Par défaut l'utilisateur et le mot de passe sont `admin`.
+* Par défaut l'utilisateur et le mot de passe sont `admin`, pensez à les changer et à créer des utilisateurs avec moins de permissions.
 
 ### B. Serveur HTTP ExpressJS
 * Installez les dépendances NPM :
@@ -27,10 +27,11 @@ Les dépendances suivantes doivent être installées sur le poste :
 * Ajoutez un fichier `.env` dans [./express/](./express/) comme suit :
   ```
   HELIUM_IOT_API_KEY=<clé-api-générée-1>
-
   INTELLIZON_FRONT_API_KEY=<clé-api-généré-2>
-  
-  MONGO_DB_URL=mongodb://admin:admin@localhost:27017
+
+  MONGO_DB_USERNAME="<votre-utilisateur>"
+  MONGO_DB_PASSWORD="<votre-mot-de-passe>"
+  MONGO_DB_URL=localhost:27017
   ```
   Ces clées seront nécessaires pour intégrer HTTP depuis la [Console Helium IoT](https://console.helium-iot.xyz/) de manière sécurisée, ainsi que pour sécuriser les requêtes depuis le Front.
 

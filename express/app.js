@@ -6,7 +6,11 @@ const app = express();
 
 dotenv.config();
 
-const mongoClient = new mongodb.MongoClient(process.env.MONGO_DB_URL, {});
+const username = encodeURIComponent(process.env.MONGO_DB_USERNAME);
+const password = encodeURIComponent(process.env.MONGO_DB_PASSWORD);
+const mongoClient = new mongodb.MongoClient(
+    `mongodb://${username}:${password}@${process.env.MONGO_DB_URL}/?authMechanism=DEFAULT`, {}
+);
 
 app.use(express.json());
 app.use(cors());
