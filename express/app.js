@@ -18,7 +18,7 @@ app.use(cors());
 // Nom des appareils écrit en dur, car nous n'avons pas d'API_KEY pour requêter Helium IoT
 const deviceNames = {
     "2cf7f1c04400049d": 'Capteur Jardin',
-    "2cf7f1c04280021c": 'Capteur Salle de bain',
+    "2cf7f1c04280021c": 'Capteur Salle de bains',
     "2cf7f1c04280041c": 'Capteur Salon'
 };
 
