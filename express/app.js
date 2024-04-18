@@ -111,11 +111,13 @@ app.get('/api/intellizon-front/collections', authFront, async (req, res) => {
         });
 
         res.status(200).send(devices);
+        
+        await mongoClient.close();
 
     } catch (error) {
         console.error('Impossible de récupérer les collections :', error);
         res.status(500).send('Internal Server Error');
-    } finally {
+        
         await mongoClient.close();
     }
 });
@@ -130,11 +132,13 @@ app.get('/api/intellizon-front/getLatestData/:device', authFront, async (req, re
         const data = await collection.findOne({}, { sort: { _id: -1 } });
 
         res.status(200).send(data);
+        
+        await mongoClient.close();
 
     } catch (error) {
         console.error("Impossible de récupérer les informations :", error);
         res.status(500).send('Internal server error');
-    } finally {
+        
         await mongoClient.close();
     }
 });
@@ -163,11 +167,13 @@ app.get('/api/intellizon-front/getDataRange/:device', authFront, async (req, res
 
         const documents = await collection.find(query).toArray();
         res.status(200).send(documents);
+        
+        await mongoClient.close();
 
     } catch (error) {
         console.error('Impossible de récupérer les informations :', error);
         res.status(500).send('Internal Server Error');
-    } finally {
+        
         await mongoClient.close();
     }
 });
@@ -217,11 +223,13 @@ app.put('/api/intellizon-front/saveConfig/:device', authFront, async (req, res) 
         await collection.replaceOne({ _id: device }, config, { upsert: true });
 
         res.status(200).send('OK');
+        
+        await mongoClient.close();
 
     } catch (error) {
         console.error("Une erreur est survenue lors de l'enregistrement dans MongoDB :", error);
         res.status(500).send('Internal Server Error');
-    } finally {
+        
         await mongoClient.close();
     }
 });
@@ -241,11 +249,13 @@ app.get('/api/intellizon-front/getConfig/:device', authFront, async (req, res) =
         }
 
         res.status(200).send(config);
+        
+        await mongoClient.close();
 
     } catch (error) {
         console.error("Une erreur est survenue lors de la récupération de la configuration dans MongoDB :", error);
         res.status(500).send('Internal Server Error');
-    } finally {
+        
         await mongoClient.close();
     }
 });
@@ -285,11 +295,13 @@ app.post('/api/helium/saveData', authHelium, async (req, res) => {
         await collection.insertOne(data);
 
         res.status(200).send('OK');
+        
+        await mongoClient.close();
 
     } catch (error) {
         console.error("Une erreur est survenue lors de l'enregistrement dans MongoDB :", error);
         res.status(500).send('Internal Server Error');
-    } finally {
+        
         await mongoClient.close();
     }
 });
