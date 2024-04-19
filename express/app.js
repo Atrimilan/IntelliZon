@@ -216,7 +216,7 @@ app.put('/api/intellizon-front/saveConfig/:device', authFront, async (req, res) 
 
         await collection.replaceOne({ _id: device }, config, { upsert: true });
 
-        res.status(200).send('OK');
+        res.status(204);
 
     } catch (error) {
         console.error("Une erreur est survenue lors de l'enregistrement dans MongoDB :", error);
