@@ -23,13 +23,13 @@ const deviceNames = {
 };
 
 // Nom des ampoules connectées écrit en dur, car nous n'avons pas le matériel nécessaire
-const connectedLights = {
-    "cd0f2a78-5235-4c16-b8f9-32593cd54f01": "A67 - Ampoule connectée E27 - 1600",
-    "1fe274d8-9283-48e1-b4ad-946d1c42f46b": "A60 - Ampoule connectée E27 - 1600",
-    "f90965da-3751-4d0b-9ee4-d65193ed8bd8": "MR16 - Spots connectés",
-    "55bdadb4-5e8b-4463-a559-98d2315b9dd2": "Spot extérieur Lily XL",
-    "cb552d01-7d9c-4609-8691-888dbede1df6": "Plafonnier moyen Infuse"
-};
+const connectedLights = [
+    { "id": "cd0f2a78-5235-4c16-b8f9-32593cd54f01", "name": "A67 - Ampoule connectée E27 - 1600" },
+    { "id": "1fe274d8-9283-48e1-b4ad-946d1c42f46b", "name": "A60 - Ampoule connectée E27 - 1600" },
+    { "id": "f90965da-3751-4d0b-9ee4-d65193ed8bd8", "name": "MR16 - Spots connectés" },
+    { "id": "55bdadb4-5e8b-4463-a559-98d2315b9dd2", "name": "Spot extérieur Lily XL" },
+    { "id": "cb552d01-7d9c-4609-8691-888dbede1df6", "name": "Plafonnier moyen Infuse" }
+]
 
 // Middleware d'authentification Helium
 function authHelium(req, res, next) {
@@ -201,7 +201,7 @@ app.put('/api/intellizon-front/saveConfig/:device', authFront, async (req, res) 
 
         if (config.light) {
             let toggleValidator = validateToggle(config.light.toggle, 0, 1000, 'light');
-            let uuidsValidator = validateUuids(config.light.controlledLights, Object.keys(connectedLights), 'light.controlledLights');
+            let uuidsValidator = validateUuids(config.light.controlledLights, connectedLights.map(cl => cl.id), 'light.controlledLights');
 
             if (!toggleValidator.isValid) {
                 return res.status(400).send(toggleValidator.message);
