@@ -35,7 +35,7 @@ Les dépendances suivantes doivent être installées sur le poste :
   ```
   Ces clées seront nécessaires pour intégrer HTTP depuis la [Console Helium IoT](https://console.helium-iot.xyz/) de manière sécurisée, ainsi que pour sécuriser les requêtes depuis le Front.
 
-  > Si vous avez modifié le mot de passe dans [run_mongo_docker.bat](run_mongo_docker.bat), il faut aussi le faire dans la constante `MONGO_DB_URL`.
+  > Si vous avez modifié le mot de passe dans [run_mongo_docker.bat](run_mongo_docker.bat), il faut aussi le faire dans la constante `MONGO_DB_PASSWORD`.
 * Exécutez [run_express_server.bat](run_express_server.bat) pour démarrer le serveur.
 
 ### C. Déploiement avec Ngrok
